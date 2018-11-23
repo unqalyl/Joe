@@ -1,0 +1,40 @@
+1.登入mgt节点
+    ssh root@mgt    //SSH协议的客户端程序，用来登入远程系统或远程执行命令
+2.打包应用软件
+    ls             //  "ll"和"ls"的区别就是是"ls -l"和“ls”的区别。ls -l是显示当前目录下文件详细信息,ls是显示当前目录下文件
+    cd /usr/bin    //  cd /usr/bin  是指跳转/usr/bin
+    tar -czvf eclipse.tar.gz eclipse//将目录里所有eclipse文件打包成eclipse.tar后，并且将其用gzip压缩，生产一个gzip压缩过的包，命名为eclipse.tar.gz 并显示过程
+    tar -czvf MATLAB.tar.gz MATLAB //same 
+3.拷贝文件到其他节点 
+    pscp /root/eclipse.tar.gz ac01:/opt/    //路径（原先第二步骤已经跳转了,这里可以把root删了
+    pscp /root/eclipse.tar.gz ac02:/opt/    //pscp 拷贝 哪里的文件 到 目标路径
+    pscp /root/eclipse.tar.gz ac03:/opt/    
+    pscp /root/MATLAB.tar.gz ac01:/opt/
+    pscp /root/MATLAB.tar.gz ac02:/opt/
+    pscp /root/MATLAB.tar.gz ac03:/opt/
+    mv /root/eclipse.tar.gz /opt/         // mv 是将文件root 改名为opt;  比如ex3改名为new1    for example:   mv ex3 new1
+    mv /root/MATLAB.tar.gz /opt/
+4.批量解压应用软件 
+    psh all "cd /opt/;tar -xvf eclipse.tar.gz"    // 跳转到opt目录下，然后解压
+                                                    // tar –xvf file.tar //解压 tar包
+                                                  //  tar -xzvf file.tar.gz //解压tar.gz
+                                                  // *.tar.gz和*.tgz 用 tar –xzf 解压
+    psh all "cd /opt/;tar -xvf MATLAB.tar.gz"
+    tar -xvf eclipse.tar.gz
+    tar -xvf MATLAB.tar.gz                   
+    
+      //Question :我在想上面四行是不是可以用下面两行代替
+      //    psh all "cd /opt/;tar -xzvf eclipse.tar.gz"
+      //    psh all "cd /opt/;tar -xzvf MATLAB.tar.gz"
+5.修改变量文件（特别是路径）
+     ll /etc/profile.d/         //看一下目录下面有哪些内容，并确认是不是soft.sh
+     vi /etc/profile.d/soft.sh  //vi打开文件进行编辑  View&Insert 编辑其中的eclipse及MATLAB路径/root/ 为/opt/
+                                //:wq 退出
+6.拷贝变量文件到所有节点 
+     pscp /etc/profile.d/soft.sh all:/etc/profile.d/
+7.登入其它节点查看变量
+     psh all "export|grep PATH"  结果中eclipse和MATLAB 在opt中即可
+     psh all "export|grep eclipse"
+     ssh c77
+     which eclipse
+     psh all "export|grep eclipse"|wc -l     //-l 统计行数
